@@ -1,0 +1,7 @@
+---
+Name: mysiteroutes
+After: framework/routes#coreroutes
+---
+SilverStripe\Control\Director:
+  rules:
+    'wp-import//$Action': Axllent\WeblogWPImport\Control\ImportController

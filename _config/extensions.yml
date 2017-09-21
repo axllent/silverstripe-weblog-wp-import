@@ -1,0 +1,6 @@
+Axllent\WeblogWPImport\Control\ImportController:
+  extensions:
+    - Axllent\WeblogWPImport\Extension\WPAutoP
+    - Axllent\WeblogWPImport\Extension\EmbedYouTube
+    # RemoveElements should come last
+    - Axllent\WeblogWPImport\Extension\RemoveElements
