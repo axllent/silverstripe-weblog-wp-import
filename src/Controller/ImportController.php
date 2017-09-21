@@ -45,6 +45,15 @@ class ImportController extends Controller
         'OptionsForm',
     ];
 
+    /**
+     * @config URLSegment linking lookups
+     * Allows you to specify alternate urlsegments for internal linking URL lookups:
+     * eg: 'contact-us': 'contact'
+     * @param array
+     */
+
+    private static $urlsegment_link_rewrite = [];
+
     private static $url_segment = 'wp-import';
 
     private static $blog = false;
@@ -210,7 +219,7 @@ class ImportController extends Controller
         $scrape_for_featured_images = !empty($data['WPImportOptions']['scrape_for_featured_images']) ? true : false;
         $set_image_width = !empty($data['set_image_width']) ? $data['set_image_width'] : false;
         $import_filters = !empty($data['WPImportFilters']) ? $data['WPImportFilters'] : false;
-
+        $urlsegment_link_rewrite = $this->config()->get('urlsegment_link_rewrite');
 
         $status = []; // Form return
 
@@ -445,7 +454,12 @@ class ImportController extends Controller
                         $a->class = 'ss-broken';
 
                         /* Try match to SiteTree */
-                        $page = SiteTree::get()->filter('URLSegment', $link_file)->first();
+                        if (!empty($urlsegment_link_rewrite[$link_file])) {
+                            $sitetree_urlsegment = $urlsegment_link_rewrite[$link_file];
+                        } else {
+                            $sitetree_urlsegment = $link_file;
+                        }
+                        $page = SiteTree::get()->filter('URLSegment', $sitetree_urlsegment)->first();
 
                         if ($page) {
                             $a->href = '[sitetree_link,id=' . $page->ID. ']';
@@ -518,10 +532,10 @@ class ImportController extends Controller
                 $remote_html = $this->getRemoteFile($orig->Link);
                 if ($remote_html && $dom = SimpleHtmlDom\str_get_html(
                     $remote_html,
-                    $lowercase=true,
-                    $forceTagsClosed=true,
+                    $lowercase = true,
+                    $forceTagsClosed = true,
                     $target_charset = 'UTF-8',
-                    $stripRN=false
+                    $stripRN = false
                 )) {
                     // Find the last meta[property=og:image] as some sites also include the author's image
                     if ($img = $dom->find('meta[property=og:image]', -1)) {
