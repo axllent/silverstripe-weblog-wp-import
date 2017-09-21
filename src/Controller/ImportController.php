@@ -204,6 +204,13 @@ class ImportController extends Controller
         }
 
         $process_categories = !empty($data['WPImportOptions']['categories']) ? : false;
+        $overwrite = !empty($data['WPImportOptions']['overwrite']) ? true : false;
+        $remove_shortcodes = !empty($data['WPImportOptions']['remove_shortcodes']) ? true : false;
+        $remove_styles_and_classes = !empty($data['WPImportOptions']['remove_styles_and_classes']) ? true : false;
+        $scrape_for_featured_images = !empty($data['WPImportOptions']['scrape_for_featured_images']) ? true : false;
+        $set_image_width = !empty($data['set_image_width']) ? $data['set_image_width'] : false;
+        $import_filters = !empty($data['WPImportFilters']) ? $data['WPImportFilters'] : false;
+
 
         $status = []; // Form return
 
@@ -224,12 +231,6 @@ class ImportController extends Controller
             }
             $status[] = $categories_created . ' categories created';
         }
-
-        $overwrite = !empty($data['WPImportOptions']['overwrite']) ? true : false;
-        $remove_shortcodes = !empty($data['WPImportOptions']['remove_shortcodes']) ? true : false;
-        $remove_styles_and_classes = !empty($data['WPImportOptions']['remove_styles_and_classes']) ? true : false;
-        $scrape_for_featured_images = !empty($data['WPImportOptions']['scrape_for_featured_images']) ? true : false;
-        $set_image_width = !empty($data['set_image_width']) ? $data['set_image_width'] : false;
 
         // Counters for form return
         $blog_posts_added = 0;
@@ -265,8 +266,8 @@ class ImportController extends Controller
             // Format WordPress code
             $content = $this->wpautop($content);
 
-            if (!empty($data['WPImportFilters'])) {
-                foreach ($data['WPImportFilters'] as $fcn) {
+            if ($import_filters) {
+                foreach ($import_filters as $fcn) {
                     $html_fcn = 'html_' . $fcn;
                     if (ClassInfo::hasMethod($this, $html_fcn)) {
                         $content = $this->$html_fcn($content, $data);
@@ -301,7 +302,7 @@ class ImportController extends Controller
                  * Downloads hosted images and sets SilverStrypoe classes
                  * leftAlone|center|left|right ss-htmleditorfield-file image
                  */
-                foreach ($dom->find('img[src^=' . $import->SiteURL . ']') as $img) {
+                foreach ($dom->find('img') as $img) {
                     if ($class = $img->class) {
                         if (preg_match('/\balignright\b/', $class)) {
                             $img->class = 'right ss-htmleditorfield-file image';
@@ -318,10 +319,17 @@ class ImportController extends Controller
 
                     /* Import Images */
                     $orig_src = $img->src;
-                    $parts = parse_url($orig_src);
+                    if (!$orig_src) {
+                        continue;
+                    }
 
+                    $parts = parse_url($orig_src);
                     if (empty($parts['path'])) {
                         continue;
+                    }
+
+                    if (!preg_match('/^' . preg_quote($import->SiteURL, '/') . '/', $orig_src)) {
+                        continue; // don't download remote images - too problematic re: filenames
                     }
 
                     $orig_src = rtrim($import->SiteURL, '/') . $parts['path'];
