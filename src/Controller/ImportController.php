@@ -304,7 +304,9 @@ class ImportController extends Controller
                  */
                 foreach ($dom->find('img') as $img) {
                     if ($class = $img->class) {
-                        if (preg_match('/\balignright\b/', $class)) {
+                        if (preg_match('/\bplaceholder\b/', $class)) {
+                            // ignore - media
+                        } elseif (preg_match('/\balignright\b/', $class)) {
                             $img->class = 'right ss-htmleditorfield-file image';
                         } elseif (preg_match('/\balignleft\b/', $class)) {
                             $img->class = 'left ss-htmleditorfield-file image';
