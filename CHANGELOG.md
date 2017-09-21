@@ -7,3 +7,4 @@ Notable changes to this project will be documented in this file.
 - Initial release
 - Fix image styling on all images excluding placeholders
 - Better YouTube parsing
+- New yml option: $urlsegment_link_rewrite
