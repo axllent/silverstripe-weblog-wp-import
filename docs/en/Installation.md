@@ -21,6 +21,23 @@ composer require axllent/silverstripe-weblog-wp-importer
 - Follow the instructions
 
 
+## Internal linking / URL rewriting
+
+When the module imports the content, all internal links are rewritten to the first page matching the
+URLSegment (regardless of tree structure). This works fine in most cases unless you have more than one
+page with the same URLSegment.
+
+If you have any URLSegments that you know have changed, eg: `contact-us` has become `contact`, you are able
+to map these in a yaml config for SiteTree lookups (remember to flush before re-processing your import).
+
+```yaml
+Axllent\WeblogWPImport\Control\ImportController:
+  urlsegment_link_rewrite:
+    'contact-us': 'contact'
+    'product-gallery': 'products'
+```
+
+
 ## Notes
 
 The module will physically attempt to download all full-sized images from your WordPress blog.
