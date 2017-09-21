@@ -24,7 +24,8 @@ Once imported, this module can be removed.
 ## Features
 
 - Interactive importer with options
-- Import of all _published_ blog posts & optionally categories
+- Import of all _published_ blog posts
+- Import categories (if `axllent/silverstripe-weblog-categories` is installed)
 - Image classes re-mapped to default SilverStripe image classes
 - Downloads (full-sized) hosted images and re-links (using SS shortcode) them in content
 - Includes YouTube videos created in default WordPress as well as the fusion plugin
@@ -32,7 +33,6 @@ Once imported, this module can be removed.
 - Options to remove (strip) all divs, spans, classes & styles from imported data
 - Auto-links to internal pages
 - Missing files / broken links reported in the CMS reports utility
-- Import categories (if axllent/silverstripe-weblog-categories is installed)
 
 
 ## Documentation
