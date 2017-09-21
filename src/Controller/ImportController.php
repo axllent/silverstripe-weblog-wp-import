@@ -532,10 +532,10 @@ class ImportController extends Controller
                 $remote_html = $this->getRemoteFile($orig->Link);
                 if ($remote_html && $dom = SimpleHtmlDom\str_get_html(
                     $remote_html,
-                    $lowercase = true,
-                    $forceTagsClosed = true,
+                    $lowercase=true,
+                    $forceTagsClosed=true,
                     $target_charset = 'UTF-8',
-                    $stripRN = false
+                    $stripRN=false
                 )) {
                     // Find the last meta[property=og:image] as some sites also include the author's image
                     if ($img = $dom->find('meta[property=og:image]', -1)) {
