@@ -16,7 +16,7 @@ class EmbedYouTube extends Extension
             ? $options['set_image_width'] : 600;
         $img_height = round($img_width / 16 * 9);
 
-        // [embed]https://www.youtube.com/watch?v=RNkv_9-AxV0[/embed]
+        // [embed]https://www.youtube.com/watch?v=ABCdef[/embed]
         preg_match_all('/\[embed\](.*)\[\/embed\]/U', $html, $matches);
         if ($matches) {
             for ($x = 0; $x < count($matches[0]); $x++) {
@@ -30,8 +30,8 @@ class EmbedYouTube extends Extension
             }
         }
 
-        // [media url="https://www.youtube.com/watch?v=RNkv_9-AxV0" width="600" height="400"]
-        preg_match_all('/\[media\s+url="(.*)"\s+.*[^\]]\]/U', $html, $matches);
+        // [media url="https://www.youtube.com/watch?v=ABCdef" width="600" height="400"]
+        preg_match_all('/\[media\s+url="(.*)".*\]/U', $html, $matches);
         if ($matches) {
             for ($x = 0; $x < count($matches[0]); $x++) {
                 if ($link = $this->owner->extractYouTubeImageURL($matches[1][$x])) {
@@ -44,9 +44,9 @@ class EmbedYouTube extends Extension
             }
         }
 
-        // [youtube id="JBprZ-qqdPM" width="600" height="350" autoplay="no" api_params="" class=""]
-        // [fusion_youtube id="JBprZ-qqdPM" width="600" height="350" autoplay="no" api_params="" class=""/]
-        preg_match_all('/\[(fusion\_youtube|youtube)\s+id="(.*)"\s+.*[^\]]\]/U', $html, $matches);
+        // [youtube id="ABCdef" width="600" height="350" autoplay="no" api_params="" class=""]
+        // [fusion_youtube id="ABCdef" width="600" height="350" autoplay="no" api_params="" class=""/]
+        preg_match_all('/\[(fusion\_youtube|youtube)\s+id="([a-zA-Z0-9\_\-]+)".*\]/U', $html, $matches);
         if ($matches) {
             for ($x = 0; $x < count($matches[0]); $x++) {
                 $link = 'https://i.ytimg.com/vi/' . $matches[2][$x] . '/hqdefault.jpg';
@@ -78,7 +78,7 @@ class EmbedYouTube extends Extension
                 $id = $query_string['v'];
             }
         }
-        return ($id) ? 'https://i.ytimg.com/vi/' . $id . '/hqdefault.jpg' : false;
+        return $id ? 'https://i.ytimg.com/vi/' . $id . '/hqdefault.jpg' : false;
     }
 
 }
