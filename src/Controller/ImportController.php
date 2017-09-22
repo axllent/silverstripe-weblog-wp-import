@@ -464,6 +464,8 @@ class ImportController extends Controller
                         if ($page) {
                             $a->href = '[sitetree_link,id=' . $page->ID. ']';
                             $a->class = false;
+                            $a->target = false;
+                            $a->title = false;
                             continue;
                         }
 
