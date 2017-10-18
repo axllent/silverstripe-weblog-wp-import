@@ -9,7 +9,6 @@ use SilverStripe\Core\Extension;
  */
 class EmbedYouTube extends Extension
 {
-
     public function html_embed_youtube($html, $options = [])
     {
         $img_width = (!empty($options['set_image_width']) && is_numeric($options['set_image_width']))
@@ -80,5 +79,4 @@ class EmbedYouTube extends Extension
         }
         return $id ? 'https://i.ytimg.com/vi/' . $id . '/hqdefault.jpg' : false;
     }
-
 }

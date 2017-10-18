@@ -66,8 +66,8 @@ class ImportController extends Controller
         }
 
         Requirements::css('https://fonts.googleapis.com/css?family=Roboto+Slab');
-        Requirements::css($this->getModuleDir() . '/css/milligram.min.css');
-        Requirements::css($this->getModuleDir() . '/css/stylesheet.css');
+        Requirements::css('axllent/silverstripe-weblog-wp-import: css/milligram.min.css');
+        Requirements::css('axllent/silverstripe-weblog-wp-import: css/stylesheet.css');
 
         $this->session = $this->request->getSession();
     }
@@ -714,10 +714,5 @@ class ImportController extends Controller
         $client = null;
 
         return $body;
-    }
-
-    public function getModuleDir()
-    {
-        return basename(dirname(dirname(dirname(__FILE__))));
     }
 }

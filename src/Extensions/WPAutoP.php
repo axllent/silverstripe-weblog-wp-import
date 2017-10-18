@@ -315,6 +315,4 @@ class WPAutoP extends Extension
     {
         return str_replace("\n", '<WPPreserveNewline />', $matches[0]);
     }
-
-
 }

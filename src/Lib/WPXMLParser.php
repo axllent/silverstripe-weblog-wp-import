@@ -8,7 +8,6 @@ use SilverStripe\ORM\ArrayList;
 
 class WPXMLParser
 {
-
     public function __construct(string $xml)
     {
         $xml = $this->stripInvalidXml($xml);

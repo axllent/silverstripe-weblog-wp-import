@@ -1,7 +1,7 @@
 {
 	"name": "axllent/silverstripe-weblog-wp-import",
 	"description": "WordPress import tool for the SilverStripe Weblog module",
-	"type": "silverstripe-module",
+	"type": "silverstripe-vendormodule",
 	"homepage": "https://github.com/axllent/silverstripe-weblog-wp-import",
 	"keywords": ["silverstripe", "blog", "import"],
 	"license": "The MIT License (MIT)",
@@ -15,11 +15,17 @@
 		"issues": "https://github.com/axllent/silverstripe-weblog-wp-import/issues"
 	},
     "require": {
+        "silverstripe/vendor-plugin": "^1.0",
         "silverstripe/cms": "^4.0",
         "axllent/silverstripe-weblog": "^1.0",
         "axllent/simplehtmldom": "^1.5",
         "guzzlehttp/guzzle": "^6"
 	},
+    "extra": {
+        "expose": [
+            "css"
+        ]
+    },
     "suggest" : {
         "axllent/silverstripe-weblog-categories": "optional: if you require categories"
     },
