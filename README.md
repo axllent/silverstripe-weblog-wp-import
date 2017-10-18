@@ -7,7 +7,7 @@ This module is somewhat of a hack as WordPress integrates plugin shortcodes (req
 This tool currently parses images, YouTube videos and links, plus the standard text formatting.
 All other shortcodes are optionally stripped from the content.
 
-Once imported, this module can be removed.
+Once the blog has been imported, this module can be uninstalled as it serves no further purpose.
 
 
 ## Requirements
