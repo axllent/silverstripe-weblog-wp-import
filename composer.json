@@ -4,7 +4,7 @@
 	"type": "silverstripe-vendormodule",
 	"homepage": "https://github.com/axllent/silverstripe-weblog-wp-import",
 	"keywords": ["silverstripe", "blog", "import"],
-	"license": "The MIT License (MIT)",
+	"license": "MIT",
 	"authors": [
 		{
 			"name": "Ralph Slooten",
