@@ -3,7 +3,7 @@
 The weblog module can be installed via composer:
 
 ```
-composer require axllent/silverstripe-weblog-wp-importer
+composer require axllent/silverstripe-weblog-wp-import
 ```
 
 ## Exporting your WordPress data
