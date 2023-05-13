@@ -2,22 +2,23 @@
 
 namespace Axllent\WeblogWPImport\Lib;
 
-use SilverStripe\Core\Config\Config;
-use SilverStripe\View\ArrayData;
 use SilverStripe\ORM\ArrayList;
+use SilverStripe\View\ArrayData;
 
 class WPXMLParser
 {
     public function __construct(string $xml)
     {
-        $xml = $this->stripInvalidXml($xml);
+        $xml       = $this->stripInvalidXml($xml);
         $this->xml = @simplexml_load_string($xml);
     }
 
     /**
      * Parse XML file
      * Does not modify any content
-     * @param NULL
+     *
+     * @param null
+     *
      * @return DataList
      */
     public function XML2Data()
@@ -39,41 +40,41 @@ class WPXMLParser
         $info = $this->xml->channel->children($this->wp_export_format);
 
         $output = ArrayData::create([
-            'SiteURL' => rtrim((string)$info->base_site_url, '/') . '/',
+            'SiteURL'    => rtrim((string) $info->base_site_url, '/') . '/',
             'Categories' => ArrayList::create(),
-            'Posts' => ArrayList::create()
+            'Posts'      => ArrayList::create(),
         ]);
 
         foreach ($this->xml->channel->item as $item) {
             $categories = ArrayList::create();
-            $tags = ArrayList::create();
+            $tags       = ArrayList::create();
             foreach ($item->category as $category) {
-                if ($category['nicename'] != 'uncategorized' && $category['domain'] == 'category') {
+                if ('uncategorized' != $category['nicename'] && 'category' == $category['domain']) {
                     $categories->push(ArrayData::create([
-                        'URLSegment' => trim((string)$category['nicename']),
-                        'Title' => trim(html_entity_decode((string)$category))
+                        'URLSegment' => trim((string) $category['nicename']),
+                        'Title'      => trim(html_entity_decode((string) $category)),
                     ]));
                 }
             }
 
             $content_obj = $item->children($this->wp_content_format);
 
-            $content = (string)$content_obj->encoded;
+            $content = (string) $content_obj->encoded;
 
             // Convert publish date
-            $publish_date = date('Y-m-d H:i:s', strtotime((string)$item->pubDate));
+            $publish_date = date('Y-m-d H:i:s', strtotime((string) $item->pubDate));
 
             $wp = $item->children($this->wp_export_format);
 
             $post = ArrayData::create([
-                'Title' => trim((string)$item->title),
-                'URLSegment' => (string)$wp->post_name,
-                'Link' => (string)$item->link,
+                'Title'       => trim((string) $item->title),
+                'URLSegment'  => (string) $wp->post_name,
+                'Link'        => (string) $item->link,
                 'PublishDate' => $publish_date,
-                'Categories' => $categories,
-                'Tags' => $tags,
-                'Status' => (string)$wp->status,
-                'Content'=> $content,
+                'Categories'  => $categories,
+                'Tags'        => $tags,
+                'Status'      => (string) $wp->status,
+                'Content'     => $content,
             ]);
 
             $output->Posts->add($post);
@@ -84,36 +85,39 @@ class WPXMLParser
 
     /**
      * Remove invalid characters from XML data
-     * @param String
-     * @return String
+     *
+     * @param string
+     * @param mixed $xml
+     *
+     * @return string
      */
     public function stripInvalidXml($xml)
     {
         $ret = '';
-        $current;
+
         if (empty($xml)) {
             return $ret;
         }
 
         $length = strlen($xml);
-        for ($i=0; $i < $length; $i++) {
-            $current = ord($xml{$i});
-            if (($current == 0x9) ||
-                ($current == 0xA) ||
-                ($current == 0xD) ||
-                (($current >= 0x20) && ($current <= 0xD7FF)) ||
-                (($current >= 0xE000) && ($current <= 0xFFFD)) ||
-                (($current >= 0x10000) && ($current <= 0x10FFFF))) {
+        for ($i = 0; $i < $length; ++$i) {
+            $current = ord($xml[$i]);
+            if ((0x9 == $current)
+                || (0xA == $current)
+                || (0xD == $current)
+                || (($current >= 0x20) && ($current <= 0xD7FF))
+                || (($current >= 0xE000) && ($current <= 0xFFFD))
+                || (($current >= 0x10000) && ($current <= 0x10FFFF))) {
                 $ret .= chr($current);
             } else {
                 $ret .= ' ';
             }
         }
+
         return $ret;
     }
 
-
-    ### The following functions are taken from the existing WordPress libraries ###
+    // ## The following functions are taken from the existing WordPress libraries ###
 
     /**
      * Replaces double line-breaks with paragraph elements.
@@ -124,16 +128,17 @@ class WPXMLParser
      *
      * @since 0.71
      *
-     * @param string $pee The text which has to be formatted.
+     * @param string $pee the text which has to be formatted
      * @param bool   $br  Optional. If set, this will convert all remaining line-breaks
      *                    after paragraphing. Default true.
-     * @return string Text which has been converted into correct paragraph tags.
+     *
+     * @return string text which has been converted into correct paragraph tags
      */
     public function wpautop($pee, $br = true)
     {
-        $pre_tags = array();
+        $pre_tags = [];
 
-        if (trim($pee) === '') {
+        if ('' === trim($pee)) {
             return '';
         }
 
@@ -144,26 +149,27 @@ class WPXMLParser
          * Pre tags shouldn't be touched by autop.
          * Replace pre tags with placeholders and bring them back after autop.
          */
-        if (strpos($pee, '<pre') !== false) {
+        if (false !== strpos($pee, '<pre')) {
             $pee_parts = explode('</pre>', $pee);
-            $last_pee = array_pop($pee_parts);
-            $pee = '';
-            $i = 0;
+            $last_pee  = array_pop($pee_parts);
+            $pee       = '';
+            $i         = 0;
 
             foreach ($pee_parts as $pee_part) {
                 $start = strpos($pee_part, '<pre');
 
                 // Malformed html?
-                if ($start === false) {
+                if (false === $start) {
                     $pee .= $pee_part;
+
                     continue;
                 }
 
-                $name = "<pre wp-pre-tag-$i></pre>";
+                $name            = "<pre wp-pre-tag-{$i}></pre>";
                 $pre_tags[$name] = substr($pee_part, $start) . '</pre>';
 
                 $pee .= substr($pee_part, 0, $start) . $name;
-                $i++;
+                ++$i;
             }
 
             $pee .= $last_pee;
@@ -180,13 +186,13 @@ class WPXMLParser
         $pee = preg_replace('!(</' . $allblocks . '>)!', "$1\n\n", $pee);
 
         // Standardize newline characters to "\n".
-        $pee = str_replace(array("\r\n", "\r"), "\n", $pee);
+        $pee = str_replace(["\r\n", "\r"], "\n", $pee);
 
         // Find newlines in all elements and add placeholders.
-        $pee = $this->wp_replace_in_html_tags($pee, array( "\n" => ' <!-- wpnl --> ' ));
+        $pee = $this->wp_replace_in_html_tags($pee, ["\n" => ' <!-- wpnl --> ']);
 
         // Collapse line breaks before and after <option> elements so they don't get autop'd.
-        if (strpos($pee, '<option') !== false) {
+        if (false !== strpos($pee, '<option')) {
             $pee = preg_replace('|\s*<option|', '<option', $pee);
             $pee = preg_replace('|</option>\s*|', '</option>', $pee);
         }
@@ -195,7 +201,7 @@ class WPXMLParser
          * Collapse line breaks inside <object> elements, before <param> and <embed> elements
          * so they don't get autop'd.
          */
-        if (strpos($pee, '</object>') !== false) {
+        if (false !== strpos($pee, '</object>')) {
             $pee = preg_replace('|(<object[^>]*>)\s*|', '$1', $pee);
             $pee = preg_replace('|\s*</object>|', '</object>', $pee);
             $pee = preg_replace('%\s*(</?(?:param|embed)[^>]*>)\s*%', '$1', $pee);
@@ -205,14 +211,14 @@ class WPXMLParser
          * Collapse line breaks inside <audio> and <video> elements,
          * before and after <source> and <track> elements.
          */
-        if (strpos($pee, '<source') !== false || strpos($pee, '<track') !== false) {
+        if (false !== strpos($pee, '<source') || false !== strpos($pee, '<track')) {
             $pee = preg_replace('%([<\[](?:audio|video)[^>\]]*[>\]])\s*%', '$1', $pee);
             $pee = preg_replace('%\s*([<\[]/(?:audio|video)[>\]])%', '$1', $pee);
             $pee = preg_replace('%\s*(<(?:source|track)[^>]*>)\s*%', '$1', $pee);
         }
 
         // Collapse line breaks before and after <figcaption> elements.
-        if (strpos($pee, '<figcaption') !== false) {
+        if (false !== strpos($pee, '<figcaption')) {
             $pee = preg_replace('|\s*(<figcaption[^>]*>)|', '$1', $pee);
             $pee = preg_replace('|</figcaption>\s*|', '</figcaption>', $pee);
         }
@@ -256,10 +262,10 @@ class WPXMLParser
         // Optionally insert line breaks.
         if ($br) {
             // Replace newlines that shouldn't be touched with a placeholder.
-            $pee = preg_replace_callback('/<(script|style).*?<\/\\1>/s', array($this, '_autop_newline_preservation_helper'), $pee);
+            $pee = preg_replace_callback('/<(script|style).*?<\/\\1>/s', [$this, '_autop_newline_preservation_helper'], $pee);
 
             // Normalize <br>
-            $pee = str_replace(array( '<br>', '<br/>' ), '<br />', $pee);
+            $pee = str_replace(['<br>', '<br/>'], '<br />', $pee);
 
             // Replace any new line characters that aren't preceded by a <br /> with a <br />.
             $pee = preg_replace('|(?<!<br />)\s*\n|', "<br />\n", $pee);
@@ -282,7 +288,7 @@ class WPXMLParser
 
         // Restore newlines in all elements.
         if (false !== strpos($pee, '<!-- wpnl -->')) {
-            $pee = str_replace(array( ' <!-- wpnl --> ', '<!-- wpnl -->' ), "\n", $pee);
+            $pee = str_replace([' <!-- wpnl --> ', '<!-- wpnl -->'], "\n", $pee);
         }
 
         return $pee;
@@ -293,9 +299,10 @@ class WPXMLParser
      *
      * @since 4.2.3
      *
-     * @param string $haystack The text which has to be formatted.
-     * @param array $replace_pairs In the form array('from' => 'to', ...).
-     * @return string The formatted text.
+     * @param string $haystack      the text which has to be formatted
+     * @param array  $replace_pairs In the form array('from' => 'to', ...).
+     *
+     * @return string the formatted text
      */
     public function wp_replace_in_html_tags($haystack, $replace_pairs)
     {
@@ -312,7 +319,7 @@ class WPXMLParser
             for ($i = 1, $c = count($textarr); $i < $c; $i += 2) {
                 if (false !== strpos($textarr[$i], $needle)) {
                     $textarr[$i] = str_replace($needle, $replace, $textarr[$i]);
-                    $changed = true;
+                    $changed     = true;
                 }
             }
         } else {
@@ -324,7 +331,7 @@ class WPXMLParser
                 foreach ($needles as $needle) {
                     if (false !== strpos($textarr[$i], $needle)) {
                         $textarr[$i] = strtr($textarr[$i], $replace_pairs);
-                        $changed = true;
+                        $changed     = true;
                         // After one strtr() break out of the foreach loop and look at next element.
                         break;
                     }
@@ -344,8 +351,9 @@ class WPXMLParser
      *
      * @since 4.2.4
      *
-     * @param string $input The text which has to be formatted.
-     * @return array The formatted text.
+     * @param string $input the text which has to be formatted
+     *
+     * @return array the formatted text
      */
     public function wp_html_split($input)
     {
@@ -363,44 +371,40 @@ class WPXMLParser
     {
         static $regex;
 
-        if (! isset($regex)) {
-            $comments =
-              '!'           // Start of comment, after the <.
+        if (!isset($regex)) {
+            $comments = '!'           // Start of comment, after the <.
             . '(?:'         // Unroll the loop: Consume everything until --> is found.
-            .     '-(?!->)' // Dash not followed by end of comment.
-            .     '[^\-]*+' // Consume non-dashes.
+            . '-(?!->)' // Dash not followed by end of comment.
+            . '[^\-]*+' // Consume non-dashes.
             . ')*+'         // Loop possessively.
             . '(?:-->)?';   // End of comment. If not found, match all input.
 
-        $cdata =
-              '!\[CDATA\['  // Start of comment, after the <.
-            . '[^\]]*+'     // Consume non-].
-            . '(?:'         // Unroll the loop: Consume everything until ]]> is found.
-            .     '](?!]>)' // One ] not followed by end of comment.
-            .     '[^\]]*+' // Consume non-].
-            . ')*+'         // Loop possessively.
-            . '(?:]]>)?';   // End of comment. If not found, match all input.
+            $cdata = '!\[CDATA\['  // Start of comment, after the <.
+                . '[^\]]*+'     // Consume non-].
+                . '(?:'         // Unroll the loop: Consume everything until ]]> is found.
+                . '](?!]>)' // One ] not followed by end of comment.
+                . '[^\]]*+' // Consume non-].
+                . ')*+'         // Loop possessively.
+                . '(?:]]>)?';   // End of comment. If not found, match all input.
 
-        $escaped =
-              '(?='           // Is the element escaped?
-            .    '!--'
-            . '|'
-            .    '!\[CDATA\['
+            $escaped = '(?='           // Is the element escaped?
+                . '!--'
+                . '|'
+                . '!\[CDATA\['
+                . ')'
+                . '(?(?=!-)'      // If yes, which type?
+                . $comments
+                . '|'
+                . $cdata
+                . ')';
+
+            $regex = '/('              // Capture the entire match.
+            . '<'           // Find start of element.
+            . '(?'          // Conditional expression follows.
+            . $escaped  // Find end of escaped element.
+            . '|'           // ... else ...
+            . '[^>]*>?' // Find end of normal element.
             . ')'
-            . '(?(?=!-)'      // If yes, which type?
-            .     $comments
-            . '|'
-            .     $cdata
-            . ')';
-
-            $regex =
-              '/('              // Capture the entire match.
-            .     '<'           // Find start of element.
-            .     '(?'          // Conditional expression follows.
-            .         $escaped  // Find end of escaped element.
-            .     '|'           // ... else ...
-            .         '[^>]*>?' // Find end of normal element.
-            .     ')'
             . ')/';
         }
 
@@ -411,9 +415,9 @@ class WPXMLParser
      * Newline preservation help function for wpautop
      *
      * @since 3.1.0
-     * @access private
      *
      * @param array $matches preg_replace_callback matches array
+     *
      * @return string
      */
     public function _autop_newline_preservation_helper($matches)
