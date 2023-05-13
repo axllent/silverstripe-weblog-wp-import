@@ -45,5 +45,5 @@ Depending on the number images you have, the import process can take a while.
 
 WordPress does not include the featured image for posts in the XML export file, so the module will
 scrape every page off the website and try get the last `<meta property="og:image">` value from the page.
-I am aware this this is unrealiable as it depends entirely on your WordPress template & plugins.
+I am aware this this is unreliable as it depends entirely on your WordPress template & plugins.
 It's messy, I know.

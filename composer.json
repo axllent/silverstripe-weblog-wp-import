@@ -1,32 +1,34 @@
 {
-	"name": "axllent/silverstripe-weblog-wp-import",
-	"description": "WordPress import tool for the SilverStripe Weblog module",
-	"type": "silverstripe-vendormodule",
-	"homepage": "https://github.com/axllent/silverstripe-weblog-wp-import",
-	"keywords": ["silverstripe", "blog", "import"],
-	"license": "MIT",
-	"authors": [
-		{
-			"name": "Ralph Slooten",
-			"homepage": "http://www.axllent.org/"
-		}
-	],
-	"support": {
-		"issues": "https://github.com/axllent/silverstripe-weblog-wp-import/issues"
-	},
+    "name": "axllent/silverstripe-weblog-wp-import",
+    "description": "WordPress import tool for the Silverstripe Weblog module",
+    "type": "silverstripe-vendormodule",
+    "homepage": "https://github.com/axllent/silverstripe-weblog-wp-import",
+    "keywords": [
+        "silverstripe",
+        "blog",
+        "import"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ralph Slooten",
+            "homepage": "http://www.axllent.org/"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/axllent/silverstripe-weblog-wp-import/issues"
+    },
     "require": {
-        "silverstripe/vendor-plugin": "^1.0",
-        "silverstripe/cms": "^4.0",
         "axllent/silverstripe-weblog": "^1.0",
         "axllent/simplehtmldom": "^1.5",
-        "guzzlehttp/guzzle": "^6"
-	},
+        "guzzlehttp/guzzle": "^7"
+    },
     "extra": {
         "expose": [
             "css"
         ]
     },
-    "suggest" : {
+    "suggest": {
         "axllent/silverstripe-weblog-categories": "optional: if you require categories"
     },
     "autoload": {

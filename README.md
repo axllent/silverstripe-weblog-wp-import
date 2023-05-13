@@ -1,6 +1,8 @@
-# WordPress Importer for SilverStripe Weblog
+# WordPress Importer for Silverstripe Weblog
 
-A module to import WordPress XML into [SilverStripe Weblog](https://github.com/axllent/silverstripe-weblog).
+A module to import WordPress XML into [Silverstripe Weblog](https://github.com/axllent/silverstripe-weblog).
+
+**Please note** that I have not used this import module in over 6 years, so it may or may not work as expected.
 
 This module is somewhat of a hack as WordPress integrates plugin shortcodes (requiring these WP plugins) inti the the XML export file.
 
@@ -14,7 +16,6 @@ Once the blog has been imported, this module can be uninstalled as it serves no 
 
 - A working version of the WordPress blog you wish to import (for images)
 - PHP with simplexml support
-- silverstripe/cms: ^4.0
 - axllent/silverstripe-weblog
 - axllent/silverstripe-weblog-categories (optional)
 - axllent/simplehtmldom (included with composer install)
@@ -26,7 +27,7 @@ Once the blog has been imported, this module can be uninstalled as it serves no 
 - Interactive importer with options
 - Import of all _published_ blog posts
 - Import categories (if `axllent/silverstripe-weblog-categories` is installed)
-- Image classes re-mapped to default SilverStripe image classes
+- Image classes re-mapped to default Silverstripe image classes
 - Downloads (full-sized) hosted images and re-links (using SS shortcode) them in content
 - Includes YouTube videos created in default WordPress as well as the fusion plugin
 - Option to set the imported blog post image widths
